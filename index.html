@@ -17,11 +17,140 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             padding: 20px;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Floating ghost orb animation */
+        .ghost-orb {
+            position: fixed;
+            top: 10%;
+            right: 5%;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, #00ff88, transparent);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: floatOrb 8s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(-30px, -50px); }
+            50% { transform: translate(20px, -80px); }
+            75% { transform: translate(-40px, -40px); }
+        }
+
+        /* Flash overlay for easter egg */
+        .flash-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(157, 78, 221, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        .flash-overlay.active {
+            animation: flashScreen 2s ease-out;
+        }
+
+        @keyframes flashScreen {
+            0%, 100% { opacity: 0; }
+            10% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Ghost silhouette for easter egg */
+        .ghost-silhouette {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10000;
+            filter: drop-shadow(0 0 30px rgba(157, 78, 221, 1));
+        }
+
+        .ghost-silhouette.active {
+            animation: ghostAppear 2s ease-out;
+        }
+
+        @keyframes ghostAppear {
+            0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            10% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            50% { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* Evidence click effects */
+        .evidence-effect {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .evidence-effect.emf5 {
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.4), transparent);
+        }
+
+        .evidence-effect.freezing {
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.4), transparent);
+        }
+
+        .evidence-effect.spiritbox {
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.3) 2px,
+                rgba(255, 255, 255, 0.3) 4px
+            );
+        }
+
+        .evidence-effect.uv {
+            background: radial-gradient(circle, rgba(157, 78, 221, 0.4), transparent);
+        }
+
+        .evidence-effect.dots {
+            background: radial-gradient(circle, rgba(0, 255, 0, 0.3), transparent);
+        }
+
+        .evidence-effect.orbs {
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.3), transparent);
+        }
+
+        .evidence-effect.writing {
+            background: radial-gradient(circle, rgba(255, 200, 50, 0.3), transparent);
+        }
+
+        .evidence-effect.active {
+            animation: evidencePulse 0.5s ease-out;
+        }
+
+        @keyframes evidencePulse {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1); }
         }
 
         h1 {
@@ -39,19 +168,47 @@
             font-size: 1.1em;
         }
 
-        .evidence-section {
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .evidence-section, .map-section, .results-section {
             background: #1a1a1a;
             border: 2px solid #00ff88;
             border-radius: 10px;
             padding: 25px;
-            margin-bottom: 30px;
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            position: relative;
         }
 
-        .evidence-section h2 {
+        .map-section {
+            border-color: #9d4edd;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+            margin-top: 0;
+        }
+
+        .results-section {
+            border-color: #9d4edd;
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.3);
+        }
+
+        .evidence-section h2, .map-section h2, .results-section h2 {
             color: #00ff88;
             margin-bottom: 15px;
             font-size: 1.5em;
+        }
+
+        .map-section h2, .results-section h2 {
+            color: #9d4edd;
         }
 
         .instructions {
@@ -63,8 +220,8 @@
 
         .evidence-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
         }
 
         .evidence-item {
@@ -77,6 +234,8 @@
             display: flex;
             align-items: center;
             user-select: none;
+            position: relative;
+            overflow: hidden;
         }
 
         .evidence-item:hover {
@@ -104,14 +263,14 @@
 
         .evidence-checkbox {
             margin-right: 10px;
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             pointer-events: none;
         }
 
         .evidence-label {
             flex: 1;
-            font-size: 1.1em;
+            font-size: 1em;
         }
 
         .evidence-item.found .evidence-label::after {
@@ -126,73 +285,76 @@
         }
 
         .mimic-warning {
-            background: #2a1a3a;
+            background: rgba(157, 78, 221, 0.2);
             border: 2px solid #9d4edd;
             border-radius: 8px;
             padding: 15px;
-            margin-top: 20px;
-            color: #c77dff;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #9d4edd;
+            font-weight: bold;
             display: none;
         }
 
         .mimic-warning.show {
             display: block;
-            animation: pulse 2s infinite;
+            animation: warningPulse 2s ease-in-out infinite;
         }
 
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(157, 78, 221, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(157, 78, 221, 0.8); }
+        @keyframes warningPulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; box-shadow: 0 0 30px rgba(157, 78, 221, 0.6); }
         }
 
-        .results-section {
-            margin-top: 30px;
+        #resultsCount {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .results-header {
-            background: #1a1a1a;
-            border: 2px solid #9d4edd;
-            border-radius: 10px;
+        .ghost-card {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 8px;
             padding: 20px;
-            margin-bottom: 20px;
-            text-align: center;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
         }
 
-        .results-header h2 {
-            color: #9d4edd;
-            font-size: 1.8em;
+        .ghost-card:hover {
+            border-color: #9d4edd;
+            box-shadow: 0 0 15px rgba(157, 78, 221, 0.4);
         }
 
-        .results-count {
-            color: #00ff88;
-            font-size: 1.2em;
-            margin-top: 10px;
-        }
-
-        .identified-banner {
-            background: linear-gradient(135deg, #1a4d1a 0%, #2a1a3a 100%);
-            border: 3px solid #00ff88;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            text-align: center;
-            animation: identifiedPulse 2s infinite;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
+        .ghost-card.identified {
+            border: 2px solid #00ff88;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.6);
+            animation: identifiedPulse 2s ease-in-out;
         }
 
         @keyframes identifiedPulse {
-            0%, 100% { 
-                box-shadow: 0 0 30px rgba(0, 255, 136, 0.6);
-                border-color: #00ff88;
-            }
-            50% { 
-                box-shadow: 0 0 50px rgba(157, 78, 221, 0.8);
-                border-color: #9d4edd;
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .identified-banner {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(157, 78, 221, 0.2));
+            border: 2px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: bannerGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes bannerGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 136, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 136, 0.8); }
         }
 
         .identified-text {
-            font-size: 2em;
+            font-size: 1.8em;
             font-weight: bold;
             color: #00ff88;
             text-shadow: 0 0 15px #00ff88;
@@ -201,426 +363,566 @@
 
         .identified-subtext {
             font-size: 1.3em;
-            color: #c77dff;
-            font-style: italic;
-        }
-
-        .ghost-card {
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .ghost-card:hover {
-            border-color: #9d4edd;
-            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
-        }
-
-        .ghost-card.identified {
-            border: 3px solid #00ff88;
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.7);
-            animation: ghostCardPulse 3s infinite;
-            transform: scale(1.02);
-        }
-
-        @keyframes ghostCardPulse {
-            0%, 100% { 
-                box-shadow: 0 0 40px rgba(0, 255, 136, 0.7);
-            }
-            50% { 
-                box-shadow: 0 0 60px rgba(157, 78, 221, 0.9);
-            }
+            color: #9d4edd;
         }
 
         .ghost-name {
-            color: #9d4edd;
-            font-size: 1.8em;
-            margin-bottom: 15px;
+            font-size: 1.5em;
             font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .ghost-card.identified .ghost-name {
-            font-size: 2.5em;
-            color: #00ff88;
-            text-shadow: 0 0 20px #00ff88;
+        .danger-icon {
+            font-size: 1.2em;
+            animation: dangerBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes dangerBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
         }
 
         .ghost-evidence {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
             flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
         }
 
         .evidence-badge {
-            background: #0f3a0f;
-            color: #00ff88;
-            padding: 8px 15px;
+            background: linear-gradient(135deg, #1a3a2a, #0f2419);
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 0.95em;
-            border: 1px solid #00ff88;
+            font-size: 0.85em;
+            color: #888;
+            border: 1px solid #333;
         }
 
-        .forced-evidence {
-            background: #3a1a0f !important;
-            color: #ff9d4e !important;
-            border-color: #ff9d4e !important;
+        .evidence-badge.found-evidence {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(0, 200, 100, 0.2));
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+        }
+
+        .evidence-badge.forced-evidence {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.3), rgba(200, 130, 0, 0.2));
+            color: #ffa500;
+            border: 1px solid #ffa500;
+            box-shadow: 0 0 10px rgba(255, 165, 0, 0.4);
         }
 
         .ghost-details {
-            background: #0f0f0f;
-            border-left: 3px solid #9d4edd;
-            padding: 15px;
-            margin-top: 15px;
-            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
         .detail-row {
-            margin-bottom: 10px;
             display: flex;
-            align-items: flex-start;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #222;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
         }
 
         .detail-label {
-            color: #c77dff;
+            color: #888;
             font-weight: bold;
-            min-width: 140px;
-            margin-right: 10px;
         }
 
         .detail-value {
             color: #e0e0e0;
-            flex: 1;
+            text-align: right;
+            max-width: 60%;
         }
 
         .speed-badge {
             display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.9em;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 0.75em;
             font-weight: bold;
-            margin-left: 5px;
+            margin-left: 8px;
         }
 
-        .speed-slow { background: #1a4d1a; color: #66ff66; }
-        .speed-normal { background: #4d4d1a; color: #ffff66; }
-        .speed-fast { background: #4d1a1a; color: #ff6666; }
-        .speed-variable { background: #1a1a4d; color: #6666ff; }
+        .speed-badge.speed-slow {
+            background: #2a5a2a;
+            color: #7fff7f;
+        }
+
+        .speed-badge.speed-normal {
+            background: #4a4a2a;
+            color: #ffff7f;
+        }
+
+        .speed-badge.speed-fast {
+            background: #5a2a2a;
+            color: #ff7f7f;
+        }
+
+        .speed-badge.speed-variable {
+            background: #4a2a5a;
+            color: #ff7fff;
+        }
 
         .no-results {
             text-align: center;
-            padding: 40px;
             color: #888;
-            font-size: 1.2em;
+            padding: 40px 20px;
+            font-style: italic;
         }
 
         .reset-button {
-            background: #4d1a1a;
-            color: #ff6666;
+            background: #ff6666;
+            color: #fff;
             border: 2px solid #ff6666;
-            padding: 12px 25px;
-            border-radius: 8px;
-            font-size: 1.1em;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 1em;
             cursor: pointer;
             transition: all 0.3s ease;
             display: block;
-            margin: 20px auto;
+            margin: 20px auto 0;
         }
 
         .reset-button:hover {
-            background: #ff6666;
-            color: #0a0a0a;
-            box-shadow: 0 0 15px rgba(255, 102, 102, 0.6);
+            background: #ff4444;
+            border-color: #ff4444;
+            box-shadow: 0 0 15px rgba(255, 102, 102, 0.4);
+        }
+
+        .map-select {
+            width: 100%;
+            padding: 12px;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            font-size: 1em;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+
+        .map-select:hover, .map-select:focus {
+            border-color: #9d4edd;
+            outline: none;
+        }
+
+        .cursed-objects-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .cursed-object-item {
+            background: #0f0f0f;
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .cursed-object-item:hover {
+            border-color: #9d4edd;
+            box-shadow: 0 0 10px rgba(157, 78, 221, 0.4);
+        }
+
+        .cursed-object-name {
+            color: #9d4edd;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cursed-object-location {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #333;
+            color: #666;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
+    <div class="ghost-orb"></div>
+    <div class="flash-overlay" id="flashOverlay"></div>
+    <div class="ghost-silhouette" id="ghostSilhouette">👻</div>
+
     <div class="container">
         <h1>👻 Phasmophobia Ghost Tracker</h1>
         <p class="subtitle">Select evidence to identify the ghost</p>
 
-        <div class="evidence-section">
-            <h2>Evidence Found</h2>
-            <p class="instructions">
-                Click once: ✓ Found | Click twice: ❌ Ruled out | Click third time: Clear
-            </p>
-            <div class="evidence-grid">
-                <div class="evidence-item" data-evidence="emf5" onclick="cycleEvidence('emf5')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">EMF 5</span>
+        <div class="main-grid">
+            <div class="evidence-section">
+                <h2>Evidence Found</h2>
+                <p class="instructions">Click once: ✓ Found | Click twice: ❌ Ruled out | Click third time: Clear</p>
+                
+                <div id="mimicWarning" class="mimic-warning">
+                    ⚠️ MIMIC ALERT: Ghost Orbs detected! Could be The Mimic pretending to be another ghost!
                 </div>
-                <div class="evidence-item" data-evidence="spiritbox" onclick="cycleEvidence('spiritbox')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">Spirit Box</span>
+
+                <div class="evidence-grid">
+                    <div class="evidence-item" data-evidence="emf5" onclick="toggleEvidence('emf5')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">EMF 5</span>
+                        <div class="evidence-effect emf5"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="spiritbox" onclick="toggleEvidence('spiritbox')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">Spirit Box</span>
+                        <div class="evidence-effect spiritbox"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="writing" onclick="toggleEvidence('writing')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">Ghost Writing</span>
+                        <div class="evidence-effect writing"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="uv" onclick="toggleEvidence('uv')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">UV</span>
+                        <div class="evidence-effect uv"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="dots" onclick="toggleEvidence('dots')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">D.O.T.S.</span>
+                        <div class="evidence-effect dots"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="orbs" onclick="toggleEvidence('orbs')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">Ghost Orbs</span>
+                        <div class="evidence-effect orbs"></div>
+                    </div>
+                    <div class="evidence-item" data-evidence="freezing" onclick="toggleEvidence('freezing')">
+                        <input type="checkbox" class="evidence-checkbox">
+                        <span class="evidence-label">Freezing Temps</span>
+                        <div class="evidence-effect freezing"></div>
+                    </div>
                 </div>
-                <div class="evidence-item" data-evidence="writing" onclick="cycleEvidence('writing')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">Ghost Writing</span>
-                </div>
-                <div class="evidence-item" data-evidence="uv" onclick="cycleEvidence('uv')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">UV</span>
-                </div>
-                <div class="evidence-item" data-evidence="dots" onclick="cycleEvidence('dots')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">D.O.T.S.</span>
-                </div>
-                <div class="evidence-item" data-evidence="orbs" onclick="cycleEvidence('orbs')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">Ghost Orbs</span>
-                </div>
-                <div class="evidence-item" data-evidence="freezing" onclick="cycleEvidence('freezing')">
-                    <input type="checkbox" class="evidence-checkbox" disabled>
-                    <span class="evidence-label">Freezing Temps</span>
-                </div>
+
+                <button class="reset-button" onclick="resetAll()">Reset All Evidence</button>
             </div>
 
-            <div class="mimic-warning" id="mimicWarning">
-                ⚠️ <strong>Mimic Alert:</strong> Ghost Orbs could be fake evidence! The Mimic always shows Ghost Orbs even though it's not one of its real evidence types.
-            </div>
-
-            <button class="reset-button" onclick="resetAll()">Reset All Evidence</button>
-        </div>
-
-        <div class="results-section">
-            <div class="results-header">
+            <div class="results-section">
                 <h2>Possible Ghosts</h2>
-                <div class="results-count" id="resultsCount">Select evidence to narrow down possibilities</div>
+                <div id="resultsCount">Select evidence to narrow down possibilities</div>
+                <div id="ghostResults">
+                    <div class="no-results">Check off evidence to see possible ghosts</div>
+                </div>
             </div>
-            <div id="ghostResults"></div>
         </div>
+
+        <div class="map-section">
+            <h2>🗺️ Maps & Cursed Object Locations</h2>
+            <p class="instructions">Select a map to see where cursed objects can spawn</p>
+            
+            <select id="mapSelect" class="map-select" onchange="updateCursedObjects()">
+                <option value="">-- Select a Map --</option>
+                <option value="tanglewood">Tanglewood Street House</option>
+                <option value="edgefield">Edgefield Road</option>
+                <option value="ridgeview">Ridgeview Court</option>
+                <option value="grafton">Grafton Farmhouse</option>
+                <option value="bleasdale">Bleasdale Farmhouse</option>
+                <option value="brownstone">Brownstone High School</option>
+                <option value="prison">Prison</option>
+                <option value="asylum">Asylum</option>
+                <option value="maple">Maple Lodge Campsite</option>
+                <option value="woodwind">Camp Woodwind</option>
+                <option value="sunny">Sunny Meadows (Restricted)</option>
+                <option value="point">Point Hope</option>
+            </select>
+
+            <div id="cursedObjectsList" class="cursed-objects-list">
+                <p style="color: #888; text-align: center;">Select a map to see cursed object locations</p>
+            </div>
+        </div>
+
+        <footer>
+            Made for ghost hunters by ghost hunters 👻 | Stay safe out there!
+        </footer>
     </div>
 
     <script>
+        // Easter egg tracking
+        let clickCount = 0;
+        let clickTimer = null;
+
+        // Evidence state tracking
+        let evidenceStates = {
+            emf5: 'none',
+            spiritbox: 'none',
+            writing: 'none',
+            uv: 'none',
+            dots: 'none',
+            orbs: 'none',
+            freezing: 'none'
+        };
+
+        // Track used phrases to avoid repeats
+        let usedPhrases = [];
+
+        // Ghost data with all information
         const ghosts = [
             {
                 name: "Spirit",
                 evidence: ["emf5", "spiritbox", "writing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "No unique traits - baseline ghost",
-                behavior: "Smudge stick prevents hunting for 180s (vs. 90s normal). This is the only reliable way to confirm a Spirit."
+                huntThreshold: "50% sanity",
+                traits: "Most common ghost type",
+                behavior: "No special abilities. Smudge sticks prevent hunts for 180s.",
+                dangerLevel: "low"
             },
             {
                 name: "Wraith",
                 evidence: ["emf5", "spiritbox", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "No UV footprints in salt",
-                behavior: "Can teleport to players. Will walk through salt but leave NO footprints under UV light."
+                huntThreshold: "50% sanity",
+                traits: "Can teleport to players, doesn't leave UV footprints",
+                behavior: "Toxic reaction to salt. Can step in salt but won't leave footprints.",
+                dangerLevel: "medium"
             },
             {
                 name: "Phantom",
-                evidence: ["spiritbox", "dots", "uv"],
+                evidence: ["spiritbox", "uv", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Disappears in photos",
-                behavior: "Taking a photo makes it vanish. Blinks slower during hunts. Ghost events cause -10% sanity."
+                huntThreshold: "50% sanity",
+                traits: "Drains sanity faster when seen",
+                behavior: "Taking a photo makes it disappear temporarily. Blinks less during hunts.",
+                dangerLevel: "medium"
             },
             {
                 name: "Poltergeist",
-                evidence: ["spiritbox", "writing", "uv"],
+                evidence: ["spiritbox", "uv", "writing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Throws multiple objects at once",
-                behavior: "Can throw 3-5 objects simultaneously. Multi-throw events cause 2% sanity drain."
+                huntThreshold: "50% sanity",
+                traits: "Can throw multiple objects at once",
+                behavior: "Very active with objects. Multi-throw drains sanity. Empty rooms = less active.",
+                dangerLevel: "medium"
             },
             {
                 name: "Banshee",
-                evidence: ["dots", "orbs", "uv"],
+                evidence: ["uv", "orbs", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50% (target only)",
-                traits: "Targets one player exclusively",
-                behavior: "Unique scream on parabolic mic. Ignores all other players during hunts - will only chase its target."
+                huntThreshold: "50% sanity (target only)",
+                traits: "Targets one player at a time",
+                behavior: "Crucifixes work at 5m range. Hunts only target, but will kill anyone in path.",
+                dangerLevel: "high"
             },
             {
                 name: "Jinn",
-                evidence: ["emf5", "freezing", "uv"],
-                speed: "Fast when far + breaker ON (2.5 m/s)",
+                evidence: ["emf5", "uv", "freezing"],
+                speed: "Fast (2.5 m/s) when far from player & breaker on",
                 speedCategory: "fast",
-                huntThreshold: "50%",
-                traits: "Fast with line of sight if breaker ON",
-                behavior: "Can drop sanity by 25% instantly when breaker is ON. Speed boost only works when breaker is powered."
+                huntThreshold: "50% sanity",
+                traits: "Breaker powers its abilities",
+                behavior: "Faster when far away if breaker is on. Cannot turn off breaker.",
+                dangerLevel: "medium"
             },
             {
                 name: "Mare",
                 evidence: ["spiritbox", "orbs", "writing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "60% (dark) / 40% (light)",
-                traits: "Hunts earlier in darkness",
-                behavior: "Constantly turns off lights. Will only hunt in dark rooms. Highly affected by light sources."
+                huntThreshold: "60% (darkness) / 40% (light)",
+                traits: "Prefers darkness, hates light",
+                behavior: "More likely to turn off lights. Hunt threshold changes with light level.",
+                dangerLevel: "medium"
             },
             {
                 name: "Revenant",
-                evidence: ["writing", "orbs", "freezing"],
-                speed: "Slow (1.0 m/s) → Fast when chasing (3.0 m/s)",
+                evidence: ["orbs", "writing", "freezing"],
+                speed: "Slow (1.0 m/s) → Very Fast (3.0 m/s) when chasing",
                 speedCategory: "variable",
-                huntThreshold: "50%",
-                traits: "Extreme speed when it sees you",
-                behavior: "Very slow when wandering. Becomes extremely fast (3.0 m/s) when it has line of sight. Easy to test when hiding."
+                huntThreshold: "50% sanity",
+                traits: "Extremely fast when it sees you",
+                behavior: "Slow when wandering, extremely fast when chasing. Break line of sight!",
+                dangerLevel: "extreme"
             },
             {
                 name: "Shade",
                 evidence: ["emf5", "writing", "freezing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "35%",
-                traits: "Very shy - less active near players",
-                behavior: "Rarely gives evidence if players are close. Requires you to be alone for most activity. No hunts/events when multiple people nearby."
+                huntThreshold: "35% sanity",
+                traits: "Shy, less likely to hunt in groups",
+                behavior: "Won't hunt if players are grouped. Very low activity when players nearby.",
+                dangerLevel: "low"
             },
             {
                 name: "Demon",
                 evidence: ["uv", "writing", "freezing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "70% (can hunt up to 100%)",
-                traits: "Can hunt at any sanity",
-                behavior: "Earliest hunting ghost. Crucifix range reduced to 3m (vs. 5m). Can initiate hunts at very high sanity."
+                huntThreshold: "70% sanity",
+                traits: "Most aggressive ghost, hunts early",
+                behavior: "Can hunt at any sanity. Crucifixes only work at 3m. Smudge = 60s protection.",
+                dangerLevel: "extreme"
             },
             {
                 name: "Yurei",
                 evidence: ["orbs", "freezing", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Drains sanity via door slams",
-                behavior: "Smudging traps it in its room for 90s. Door slam ability causes sanity drop."
+                huntThreshold: "50% sanity",
+                traits: "Drains sanity faster",
+                behavior: "Closes doors and drains sanity. Smudge confines it to room for 90s.",
+                dangerLevel: "medium"
             },
             {
                 name: "Oni",
                 evidence: ["emf5", "freezing", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Very visible and active",
-                behavior: "Throws objects forcefully and frequently. More visible during events and hunts. Flickers faster during hunts."
+                huntThreshold: "50% sanity",
+                traits: "Very active, visible more often",
+                behavior: "More visible. Cannot do airball event. More active when people nearby.",
+                dangerLevel: "medium"
             },
             {
                 name: "Yokai",
-                evidence: ["spiritbox", "dots", "orbs"],
+                evidence: ["spiritbox", "orbs", "dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "80% (if talking nearby)",
+                huntThreshold: "80% sanity (if talking nearby) / 50% (normal)",
                 traits: "Triggered by voice",
-                behavior: "Can only hear voices within 2.5m during hunts. Talking near it can trigger hunts at 80% sanity."
+                behavior: "Voice activates it more. Can only hear electronics/voices within 2m during hunt.",
+                dangerLevel: "medium"
             },
             {
                 name: "Hantu",
-                evidence: ["freezing", "orbs", "uv"],
+                evidence: ["uv", "orbs", "freezing"],
                 forcedEvidence: ["freezing"],
-                speed: "Fast in cold (up to 2.7 m/s) / Slow in warm (1.4 m/s)",
+                speed: "Slow (1.4 m/s) in warm → Fast (2.7 m/s) in cold",
                 speedCategory: "variable",
-                huntThreshold: "50%",
-                traits: "Faster in cold rooms",
-                behavior: "Visible breath during hunts when power is off. Speed increases in colder temperatures. Never turns breaker ON (only OFF)."
+                huntThreshold: "50% sanity",
+                traits: "Cold-based speed, visible breath during hunts",
+                behavior: "Faster in cold areas. Keep breaker ON to slow it. Visible freezing breath.",
+                dangerLevel: "high"
             },
             {
                 name: "Goryo",
-                evidence: ["emf5", "dots", "uv"],
+                evidence: ["emf5", "uv", "dots"],
                 forcedEvidence: ["dots"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
+                huntThreshold: "50% sanity",
                 traits: "D.O.T.S. only visible on camera",
-                behavior: "D.O.T.S. will ONLY show on video camera, not with naked eye. Never roams from its favorite room."
+                behavior: "Cannot roam far from ghost room. D.O.T.S. only seen through video camera.",
+                dangerLevel: "low"
             },
             {
                 name: "Myling",
-                evidence: ["emf5", "writing", "uv"],
+                evidence: ["emf5", "uv", "writing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Quieter footsteps during hunts",
-                behavior: "Footsteps are much quieter at distance (silent beyond 12m). Louder on parabolic mic."
+                huntThreshold: "50% sanity",
+                traits: "Quiet footsteps during hunts",
+                behavior: "Paranormal sounds more often. Footsteps/vocals only heard within 12m.",
+                dangerLevel: "high"
             },
             {
                 name: "Onryo",
                 evidence: ["spiritbox", "orbs", "freezing"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "60%",
-                traits: "Triggered by flame extinction",
-                behavior: "3rd candle blown out triggers hunt attempt. Prioritizes extinguishing candles over crucifix."
+                huntThreshold: "60% sanity",
+                traits: "Fire-related behavior",
+                behavior: "Blows out flames. 3rd flame blown = hunt attempt. Lit candle blocks hunt.",
+                dangerLevel: "medium"
             },
             {
                 name: "The Twins",
                 evidence: ["emf5", "spiritbox", "freezing"],
-                speed: "Slow (1.5 m/s) ↔ Fast (1.9 m/s)",
+                speed: "Slow (1.5 m/s) or Fast (1.9 m/s) depending on twin",
                 speedCategory: "variable",
-                huntThreshold: "50%",
-                traits: "Two entities with different speeds",
-                behavior: "Dual interactions in different rooms. One twin is slower (1.5 m/s), the other faster (1.9 m/s). Look for desynced behavior."
+                huntThreshold: "50% sanity",
+                traits: "Two entities, can hunt/interact separately",
+                behavior: "Can be in two places at once. Speed varies. Interactions alternate.",
+                dangerLevel: "high"
             },
             {
                 name: "Raiju",
-                evidence: ["emf5", "dots", "orbs"],
-                speed: "Fast near electronics (2.5 m/s)",
+                evidence: ["emf5", "orbs", "dots"],
+                speed: "Fast (2.5 m/s) near active electronics",
                 speedCategory: "fast",
-                huntThreshold: "65%",
-                traits: "Speed boost near active electronics",
-                behavior: "Moves extremely fast when near active equipment. Disrupts electronics from 15m away."
+                huntThreshold: "65% sanity (electronics nearby) / 50% (normal)",
+                traits: "Electronics supercharge it",
+                behavior: "Faster near electronics. Disrupts equipment from farther away during hunts.",
+                dangerLevel: "high"
             },
             {
                 name: "Obake",
-                evidence: ["emf5", "orbs", "uv"],
+                evidence: ["emf5", "uv", "orbs"],
                 forcedEvidence: ["uv"],
                 speed: "Normal (1.7 m/s)",
                 speedCategory: "normal",
-                huntThreshold: "50%",
-                traits: "Unique UV prints - shapeshifts",
-                behavior: "25% chance to leave NO fingerprint. Can leave 6-finger prints or double prints. May shapeshift models during hunt blinks. UV evidence disappears faster."
+                huntThreshold: "50% sanity",
+                traits: "Shapeshifter, UV trickery",
+                behavior: "6-fingered handprints (rare). UV evidence disappears faster. Changes models.",
+                dangerLevel: "medium"
             },
             {
                 name: "The Mimic",
-                evidence: ["spiritbox", "freezing", "uv", "orbs"],
+                evidence: ["spiritbox", "uv", "freezing", "orbs"],
                 forcedEvidence: ["orbs"],
-                speed: "Variable (copies other ghosts)",
+                speed: "Copies other ghosts",
                 speedCategory: "variable",
-                huntThreshold: "Variable (12-100%)",
-                traits: "Mimics other ghosts + fake Ghost Orbs",
-                behavior: "ALWAYS shows Ghost Orbs as fake 4th evidence. Copies behavior and traits of other ghost types. Can mimic any hunt threshold or speed."
+                huntThreshold: "Varies (copies target ghost)",
+                traits: "Mimics other ghost types, always has Ghost Orbs",
+                behavior: "Copies abilities/speed of other ghosts. ALWAYS shows Ghost Orbs as 4th evidence.",
+                dangerLevel: "extreme"
             },
             {
                 name: "Moroi",
                 evidence: ["spiritbox", "writing", "freezing"],
                 forcedEvidence: ["spiritbox"],
-                speed: "Fast at low sanity (up to 2.25 m/s)",
-                speedCategory: "fast",
-                huntThreshold: "50%",
-                traits: "Curses players via Spirit Box",
-                behavior: "Getting a Spirit Box response curses you = faster sanity drain. Speed increases significantly as team sanity drops (up to 2.25 m/s at 0%)."
+                speed: "Speeds up as sanity drops (1.5-2.25 m/s)",
+                speedCategory: "variable",
+                huntThreshold: "50% sanity",
+                traits: "Curse on Spirit Box response",
+                behavior: "Gets faster at lower average sanity. Sanity drains faster. Smudge blinds longer.",
+                dangerLevel: "high"
             },
             {
                 name: "Deogen",
                 evidence: ["spiritbox", "writing", "dots"],
                 forcedEvidence: ["spiritbox"],
-                speed: "Fast far (3.0 m/s) → Slow close (0.4 m/s)",
+                speed: "Fast (3.0 m/s) far away → Slow (0.4 m/s) close",
                 speedCategory: "variable",
-                huntThreshold: "40%",
-                traits: "Always knows your location",
-                behavior: "Heavy, raspy breathing on Spirit Box. Knows your exact location during hunts. Moves fast when far, dramatically slows when close. Cannot be hidden from."
+                huntThreshold: "40% sanity",
+                traits: "Always knows where you are",
+                behavior: "Cannot hide from it. Slows down when close. Best strategy: loop around objects.",
+                dangerLevel: "extreme"
             },
             {
                 name: "Thaye",
-                evidence: ["writing", "orbs", "dots"],
-                speed: "Fast early (2.75 m/s) → Slow late (1.0 m/s)",
+                evidence: ["orbs", "writing", "dots"],
+                speed: "Fast (2.75 m/s) when young → Slow (1.0 m/s) when old",
                 speedCategory: "variable",
-                huntThreshold: "75% → 15% (weakens over time)",
-                traits: "Ages and weakens over time",
-                behavior: "Starts strong with fast hunts and high threshold. Ages every 1-2.5 minutes with players nearby. Becomes slower and less aggressive as it ages."
+                huntThreshold: "75% (young) → 15% (old)",
+                traits: "Ages over time, becoming less dangerous",
+                behavior: "Very active/fast when young. Ages with player presence. Gets slower/calmer.",
+                dangerLevel: "variable"
             }
         ];
 
-        // Identification phrases with movie references
+        // Identification phrases
         const identificationPhrases = {
             general: [
                 "Oh shit, a ghost!!",
@@ -634,7 +936,23 @@
                 "Bingo! Ghost located!",
                 "And the winner is...",
                 "Pack it up, we got 'em!",
-                "Case closed!"
+                "Case closed!",
+                "Well, that's unfortunate.",
+                "Congratulations! You found the murder ghost!",
+                "Ding ding ding! We have a winner!",
+                "Tag, you're it!",
+                "Ghost located. Sanity? Not so much.",
+                "Found it! Now can we leave?",
+                "Achievement unlocked: Ghost Identified",
+                "There's your problem right there.",
+                "Yep, definitely haunted.",
+                "Mystery solved, trauma acquired.",
+                "And the award for scariest ghost goes to...",
+                "Nailed it! ...can we go now?",
+                "Welp, there's your ghost.",
+                "Called it!",
+                "Book 'em, boys!",
+                "Case. Fucking. Closed."
             ],
             specific: {
                 "Demon": [
@@ -643,7 +961,11 @@
                     "Oh fuck, it's a Demon! EVACUATE!",
                     "This is BAD. Very, very bad.",
                     "The power of Christ compels you! ...wait, wrong game.",
-                    "Time to call an exorcist!"
+                    "Time to call an exorcist!",
+                    "Call a priest. Actually, call several priests.",
+                    "This is above our pay grade!",
+                    "Worst case scenario achieved!",
+                    "Why is it always a Demon?!"
                 ],
                 "Deogen": [
                     "GET OUT NOW!!!",
@@ -657,13 +979,18 @@
                     "A Revenant! Break line of sight NOW!",
                     "If it sees you, you're done for!",
                     "Time to practice your hiding skills...",
-                    "It'll follow you to the ends of the earth!"
+                    "It'll follow you to the ends of the earth!",
+                    "Run. Zig-zag. Hide. SURVIVE.",
+                    "Fast AND furious!",
+                    "It's MAD and it's FAST."
                 ],
                 "Moroi": [
                     "Hope your sanity is high...",
                     "A Moroi! It's gonna drain you fast!",
                     "Don't talk to it anymore!",
-                    "Sanity pills. NOW."
+                    "Sanity pills. NOW.",
+                    "Pop those sanity pills like candy!",
+                    "Your mic just became a liability."
                 ],
                 "Thaye": [
                     "Is it old or young? That's the question...",
@@ -677,7 +1004,10 @@
                     "A Banshee! It's hunting someone specific!",
                     "Who's the unlucky target?",
                     "Better not be chasing YOU...",
-                    "Hear that scream? Yeah, that's not good."
+                    "Hear that scream? Yeah, that's not good.",
+                    "Someone's got a stalker...",
+                    "Hope you're not the favorite!",
+                    "It's personal now."
                 ],
                 "The Mimic": [
                     "Those fake orbs almost got you, huh?",
@@ -685,7 +1015,9 @@
                     "The trickster reveals itself!",
                     "Can't fool us with fake evidence!",
                     "Identity theft is not a joke, Jim!",
-                    "The ghost of many faces!"
+                    "The ghost of many faces!",
+                    "Congratulations, you've been bamboozled!",
+                    "The orbs were a LIE!"
                 ],
                 "Yokai": [
                     "SHUT UP! It's a Yokai!",
@@ -693,7 +1025,10 @@
                     "Voice activated ghost detected!",
                     "Time to zip it!",
                     "Shhhhh! Be vewy vewy quiet...",
-                    "Indoor voices, people!"
+                    "Indoor voices, people!",
+                    "Silence is golden. And mandatory.",
+                    "Talk = death. Choose wisely.",
+                    "Library rules are now SURVIVAL rules."
                 ],
                 "Oni": [
                     "At least it's visible!",
@@ -707,43 +1042,65 @@
                     "It's a Shade! No wonder it was quiet.",
                     "The antisocial ghost reveals itself!",
                     "Too shy to hunt much. Nice!",
-                    "Finally, a ghost with social anxiety!"
-                ],
-                "Poltergeist": [
-                    "They're heeeere...",
-                    "Hope you like flying objects!",
-                    "Someone's been rearranging the furniture..."
+                    "Finally, a ghost with social anxiety!",
+                    "The introvert of ghosts!",
+                    "Barely even hunting. Polite, honestly."
                 ],
                 "Phantom": [
-                    "Now you see it, now you don't!"
+                    "Now you see it, now you don't!",
+                    "Good luck with those sanity pills!",
+                    "Your sanity just said 'goodbye'."
                 ],
-                "Wraith": [
-                    "No footprints? Spooky bastard..."
+                "Poltergeist": [
+                    "Poltergeist? More like PAIN-tergeist!",
+                    "Hide your stuff. All of it.",
+                    "R.I.P. to every object in this house.",
+                    "The throwing champion has entered the chat!"
                 ],
-                "Spirit": [
-                    "Just a regular ghost. If there is such a thing...",
-                    "The most average of ghosts. Still deadly though!",
-                    "It's giving... basic.",
-                    "The ghost equivalent of vanilla ice cream. Still deadly."
+                "Jinn": [
+                    "No wishes granted here, sorry!",
+                    "Unplug EVERYTHING.",
+                    "Your breaker box is not your friend.",
+                    "Electricity betrays us again!"
                 ],
                 "Mare": [
                     "Afraid of the dark? You should be.",
-                    "Who turned out the lights?"
+                    "Who turned out the lights?",
+                    "Lights on = safe. Lights off = dead.",
+                    "Your childhood fear was justified!",
+                    "The dark is NOT your friend here."
                 ],
-                "Jinn": [
-                    "No wishes granted here, sorry!"
+                "Wraith": [
+                    "Salt? What salt? -The Wraith, probably",
+                    "Footprint-free and loving it!",
+                    "This one flies coach."
+                ],
+                "Spirit": [
+                    "The most average ghost alive. Well, dead.",
+                    "Congrats, it's a boy! ...I mean Spirit.",
+                    "Could be worse. Could be a Demon.",
+                    "Don't let the name fool you - still deadly.",
+                    "Basic doesn't mean harmless.",
+                    "The 'normal' ghost that keeps killing people.",
+                    "Underestimate it at your own risk.",
+                    "It's common for a reason - it WORKS.",
+                    "Plain vanilla with a side of murder."
                 ],
                 "Yurei": [
-                    "The door slammer supreme!",
-                    "Knock knock. Who's there? SANITY DRAIN."
+                    "*SLAM* goes another door...",
+                    "It REALLY hates open doors."
                 ],
                 "Hantu": [
                     "Let it go, let it go... wait, wrong ice reference.",
-                    "Colder than your ex's heart!"
+                    "Colder than your ex's heart!",
+                    "Turn the heat OFF? Are you INSANE?",
+                    "Breaker stays ON for this one!"
                 ],
                 "Goryo": [
                     "Camera shy? Nope, just exclusive to cameras!",
-                    "Smile for the camera... or don't. We can't see you anyway."
+                    "Smile for the camera... or don't. We can't see you anyway.",
+                    "Congrats on buying a video camera!",
+                    "DOTS + Video Camera = your new best friend"
                 ],
                 "Myling": [
                     "Quiet footsteps, loud consequences!",
@@ -753,7 +1110,9 @@
                     "Don't worry, it won't crawl out of your TV... probably.",
                     "Hear that death rattle? Time to leave.",
                     "Blow out the candles, win a hunt!",
-                    "Fire bad. Ghost mad."
+                    "Fire bad. Ghost mad.",
+                    "Candles: your new religion.",
+                    "Fire management simulator activated!"
                 ],
                 "The Twins": [
                     "Here's Johnny!",
@@ -761,53 +1120,177 @@
                     "Come play with us... forever and ever...",
                     "Double trouble!",
                     "Seeing double? That's not the sanity drain...",
-                    "Two for the price of one. Lucky you!"
+                    "Two for the price of one. Lucky you!",
+                    "Parent Trap, but make it deadly.",
+                    "Tag-team terror!"
                 ],
                 "Raiju": [
-                    "Someone forgot to turn off their flashlight..."
+                    "Someone forgot to turn off their flashlight...",
+                    "Flashlights OFF, people!",
+                    "Electronics = rocket fuel for murder."
                 ],
                 "Obake": [
                     "Six fingers? Someone's been to Chernobyl...",
-                    "The shapeshifting sneakster!"
+                    "The shapeshifting sneakster!",
+                    "Count those fingers carefully...",
+                    "Fingerprint roulette!"
                 ]
             }
         };
 
-        // Track evidence states: 'none', 'found', or 'ruled-out'
-        let evidenceStates = {
-            emf5: 'none',
-            spiritbox: 'none',
-            writing: 'none',
-            uv: 'none',
-            dots: 'none',
-            orbs: 'none',
-            freezing: 'none'
+        // Cursed object data
+        const cursedObjectData = {
+            tanglewood: [
+                { name: "Summoning Circle", location: "Garage" },
+                { name: "Ouija Board", location: "Basement or Master Bedroom" },
+                { name: "Music Box", location: "Living Room or Boys Bedroom" },
+                { name: "Voodoo Doll", location: "Storage Room" },
+                { name: "Tarot Cards", location: "Living Room (small table in corner)" },
+                { name: "Haunted Mirror", location: "Hallway near Living Room (on wall)" }
+            ],
+            edgefield: [
+                { name: "Summoning Circle", location: "Basement (near stairs)" },
+                { name: "Ouija Board", location: "Basement backroom (on shelf)" },
+                { name: "Music Box", location: "Foyer (near stairs)" },
+                { name: "Voodoo Doll", location: "Purple bedroom (2nd floor)" },
+                { name: "Tarot Cards", location: "Table behind front door" },
+                { name: "Haunted Mirror", location: "Living Room (southwest corner)" }
+            ],
+            ridgeview: [
+                { name: "Summoning Circle", location: "Garage" },
+                { name: "Ouija Board", location: "1st floor utility closet" },
+                { name: "Music Box", location: "Girl's bedroom" },
+                { name: "Voodoo Doll", location: "Office" },
+                { name: "Tarot Cards", location: "Foyer (near window by front door)" },
+                { name: "Haunted Mirror", location: "Behind stairs (1st floor)" }
+            ],
+            grafton: [
+                { name: "Summoning Circle", location: "Shed" },
+                { name: "Ouija Board", location: "Master bedroom closet" },
+                { name: "Music Box", location: "Dining Room" },
+                { name: "Voodoo Doll", location: "Nursery (2nd floor)" },
+                { name: "Tarot Cards", location: "Dining table (left of front door)" },
+                { name: "Haunted Mirror", location: "Living Room (multiple spots)" }
+            ],
+            bleasdale: [
+                { name: "Summoning Circle", location: "Attic" },
+                { name: "Ouija Board", location: "Workshop" },
+                { name: "Music Box", location: "Nursery (2nd floor)" },
+                { name: "Voodoo Doll", location: "Laundry Room" },
+                { name: "Tarot Cards", location: "Office (1st room on left, on desk)" },
+                { name: "Haunted Mirror", location: "Living Room or Office (multiple spots)" }
+            ],
+            brownstone: [
+                { name: "Summoning Circle", location: "Lobby (between lobby and corridor)" },
+                { name: "Ouija Board", location: "Lobby area (1st floor)" },
+                { name: "Music Box", location: "Lobby (past mirror)" },
+                { name: "Voodoo Doll", location: "Pool Area or Gym" },
+                { name: "Tarot Cards", location: "Lobby (near 1st classroom wall)" },
+                { name: "Haunted Mirror", location: "Lobby (along library wall)" }
+            ],
+            prison: [
+                { name: "Summoning Circle", location: "Main entrance area" },
+                { name: "Ouija Board", location: "Main entrance (left corner)" },
+                { name: "Music Box", location: "Near entrance" },
+                { name: "Voodoo Doll", location: "Cafeteria area" },
+                { name: "Tarot Cards", location: "Box near entrance (left side)" },
+                { name: "Haunted Mirror", location: "Under seats (right of 1st aisle)" }
+            ],
+            asylum: [
+                { name: "Summoning Circle", location: "Chapel (on stage)" },
+                { name: "Ouija Board", location: "Chapel (on stage)" },
+                { name: "Music Box", location: "Chapel (on stage)" },
+                { name: "Voodoo Doll", location: "Chapel (on stage)" },
+                { name: "Tarot Cards", location: "Chapel (on stage)" },
+                { name: "Haunted Mirror", location: "Chapel (on stage)" }
+            ],
+            maple: [
+                { name: "Summoning Circle", location: "Cabin (base of stairs - 1st floor)" },
+                { name: "Ouija Board", location: "Restroom building (back alley shelf)" },
+                { name: "Music Box", location: "Campfire by totem pole (on stump)" },
+                { name: "Voodoo Doll", location: "Left campsite (logs around campfire)" },
+                { name: "Tarot Cards", location: "Table behind campfire (left after spawn)" },
+                { name: "Haunted Mirror", location: "Reception building (above couch, left side)" }
+            ],
+            woodwind: [
+                { name: "Summoning Circle", location: "Campfire area" },
+                { name: "Ouija Board", location: "Cabin interiors" },
+                { name: "Music Box", location: "Main lodge area" },
+                { name: "Voodoo Doll", location: "Storage shed or campfire logs" },
+                { name: "Tarot Cards", location: "Wooden tables (left side, on back)" },
+                { name: "Haunted Mirror", location: "Left of campfire (by tree w/ fairy lights)" }
+            ],
+            sunny: [
+                { name: "Summoning Circle", location: "Chapel (on stage in circle)" },
+                { name: "Ouija Board", location: "Chapel (on stage)" },
+                { name: "Music Box", location: "Chapel (on stage)" },
+                { name: "Voodoo Doll", location: "Chapel (on stage)" },
+                { name: "Tarot Cards", location: "Chapel (on stage)" },
+                { name: "Haunted Mirror", location: "Chapel (on stage)" }
+            ],
+            point: [
+                { name: "Summoning Circle", location: "5th floor bathroom (center)" },
+                { name: "Ouija Board", location: "4th floor (on shelf, middle of room)" },
+                { name: "Music Box", location: "2nd floor" },
+                { name: "Voodoo Doll", location: "Varies by floor" },
+                { name: "Tarot Cards", location: "1st floor (end table between green couches)" },
+                { name: "Haunted Mirror", location: "3rd floor (by blue cabinet)" }
+            ]
         };
 
-        // Track phrase indices for cycling
-        let phraseIndices = {};
+        // Tab switching
+        function switchTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-button');
+            
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (tabName === 'evidence') {
+                document.getElementById('evidenceTab').classList.add('active');
+                buttons[0].classList.add('active');
+            } else {
+                document.getElementById('mapTab').classList.add('active');
+                buttons[1].classList.add('active');
+            }
+        }
 
-        function cycleEvidence(evidenceId) {
-            const item = document.querySelector(`[data-evidence="${evidenceId}"]`);
+        // Evidence toggle with effects
+        function toggleEvidence(evidenceId) {
+            const item = document.querySelector(`.evidence-item[data-evidence="${evidenceId}"]`);
             const checkbox = item.querySelector('.evidence-checkbox');
-            const currentState = evidenceStates[evidenceId];
+            const effect = item.querySelector('.evidence-effect');
+            
+            // Easter egg tracking
+            clickCount++;
+            if (clickTimer) clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
+            
+            if (clickCount >= 15) {
+                triggerEasterEgg();
+                clickCount = 0;
+            }
 
-            // Remove all state classes first
-            item.classList.remove('found', 'ruled-out');
+            // Trigger visual effect only when marking as "found"
+            if (evidenceStates[evidenceId] === 'none') {
+                effect.classList.add('active');
+                setTimeout(() => effect.classList.remove('active'), 500);
+            }
 
-            // Cycle: none → found → ruled-out → none
-            if (currentState === 'none') {
+            // Cycle through states: none → found → ruled-out → none
+            if (evidenceStates[evidenceId] === 'none') {
                 evidenceStates[evidenceId] = 'found';
-                checkbox.checked = true;
-                checkbox.indeterminate = false;
                 item.classList.add('found');
-            } else if (currentState === 'found') {
+                checkbox.checked = true;
+            } else if (evidenceStates[evidenceId] === 'found') {
                 evidenceStates[evidenceId] = 'ruled-out';
+                item.classList.remove('found');
+                item.classList.add('ruled-out');
                 checkbox.checked = false;
                 checkbox.indeterminate = true;
-                item.classList.add('ruled-out');
-            } else { // ruled-out
+            } else {
                 evidenceStates[evidenceId] = 'none';
+                item.classList.remove('ruled-out');
                 checkbox.checked = false;
                 checkbox.indeterminate = false;
             }
@@ -816,32 +1299,62 @@
             filterGhosts();
         }
 
+        function triggerEasterEgg() {
+            const overlay = document.getElementById('flashOverlay');
+            const ghost = document.getElementById('ghostSilhouette');
+            
+            overlay.classList.add('active');
+            ghost.classList.add('active');
+            
+            setTimeout(() => {
+                overlay.classList.remove('active');
+                ghost.classList.remove('active');
+            }, 2000);
+        }
+
         function updateMimicWarning() {
             const warning = document.getElementById('mimicWarning');
             if (evidenceStates.orbs === 'found') {
-                warning.classList.add('show');
+                const foundEvidence = Object.keys(evidenceStates).filter(ev => evidenceStates[ev] === 'found');
+                const ruledOutEvidence = Object.keys(evidenceStates).filter(ev => evidenceStates[ev] === 'ruled-out');
+                
+                const mimicRealEvidence = ["spiritbox", "freezing", "uv"];
+                const nonOrbsFound = foundEvidence.filter(e => e !== "orbs");
+                const mimicPossible = nonOrbsFound.every(ev => mimicRealEvidence.includes(ev)) &&
+                                     !ruledOutEvidence.some(ev => mimicRealEvidence.includes(ev));
+                
+                if (mimicPossible) {
+                    warning.classList.add('show');
+                } else {
+                    warning.classList.remove('show');
+                }
             } else {
                 warning.classList.remove('show');
             }
         }
 
         function getIdentificationPhrase(ghostName) {
-            if (phraseIndices[ghostName] === undefined) {
-                phraseIndices[ghostName] = 0;
-            }
-
+            let phrases;
+            
             if (identificationPhrases.specific[ghostName]) {
-                const phrases = identificationPhrases.specific[ghostName];
-                const index = phraseIndices[ghostName];
-                const phrase = phrases[index];
-                phraseIndices[ghostName] = (index + 1) % phrases.length;
-                return phrase;
+                phrases = identificationPhrases.specific[ghostName];
+            } else {
+                phrases = identificationPhrases.general;
             }
 
-            const generalPhrases = identificationPhrases.general;
-            const index = phraseIndices['general'] || 0;
-            const phrase = generalPhrases[index];
-            phraseIndices['general'] = (index + 1) % generalPhrases.length;
+            let availablePhrases = phrases.filter(p => !usedPhrases.includes(p));
+            
+            if (availablePhrases.length === 0) {
+                usedPhrases = [];
+                availablePhrases = phrases;
+            }
+
+            const phrase = availablePhrases[Math.floor(Math.random() * availablePhrases.length)];
+            usedPhrases.push(phrase);
+            if (usedPhrases.length > 5) {
+                usedPhrases.shift();
+            }
+
             return phrase;
         }
 
@@ -885,7 +1398,6 @@
 
             resultsCount.textContent = `${matchingGhosts.length} possible ghost${matchingGhosts.length === 1 ? '' : 's'}`;
 
-            // Special display for exactly 1 ghost
             if (matchingGhosts.length === 1) {
                 const ghost = matchingGhosts[0];
                 const phrase = getIdentificationPhrase(ghost.name);
@@ -917,15 +1429,25 @@
                 freezing: "Freezing Temps"
             };
 
+            const foundEvidence = Object.keys(evidenceStates).filter(ev => evidenceStates[ev] === 'found');
+
             const evidenceBadges = ghost.evidence.map(ev => {
                 const isForced = ghost.forcedEvidence && ghost.forcedEvidence.includes(ev);
-                const badgeClass = isForced ? 'evidence-badge forced-evidence' : 'evidence-badge';
+                const isFound = foundEvidence.includes(ev);
+                let badgeClass = 'evidence-badge';
+                if (isForced) badgeClass += ' forced-evidence';
+                // Invert logic: if NOT found, highlight it (since it's still possible)
+                if (!isFound) badgeClass += ' found-evidence';
                 return `<span class="${badgeClass}">${evidenceLabels[ev]}${isForced ? ' ⭐' : ''}</span>`;
             }).join('');
 
+            const dangerIcon = (ghost.dangerLevel === 'extreme' || ghost.dangerLevel === 'high') 
+                ? '<span class="danger-icon">☠️</span>' 
+                : '';
+
             return `
                 <div class="ghost-card ${isIdentified ? 'identified' : ''}">
-                    <div class="ghost-name">${ghost.name}</div>
+                    <div class="ghost-name">${ghost.name} ${dangerIcon}</div>
                     <div class="ghost-evidence">${evidenceBadges}</div>
                     <div class="ghost-details">
                         <div class="detail-row">
@@ -952,6 +1474,25 @@
             `;
         }
 
+        function updateCursedObjects() {
+            const mapSelect = document.getElementById('mapSelect');
+            const objectsList = document.getElementById('cursedObjectsList');
+            const selectedMap = mapSelect.value;
+
+            if (!selectedMap) {
+                objectsList.innerHTML = '<p style="color: #888; text-align: center;">Select a map to see cursed object locations</p>';
+                return;
+            }
+
+            const objects = cursedObjectData[selectedMap];
+            objectsList.innerHTML = objects.map(obj => `
+                <div class="cursed-object-item">
+                    <div class="cursed-object-name">${obj.name}</div>
+                    <div class="cursed-object-location">${obj.location}</div>
+                </div>
+            `).join('');
+        }
+
         function resetAll() {
             Object.keys(evidenceStates).forEach(ev => {
                 evidenceStates[ev] = 'none';
@@ -973,3 +1514,4 @@
     </script>
 </body>
 </html>
+
