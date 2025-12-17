@@ -527,11 +527,24 @@
             border-radius: 5px;
             padding: 12px;
             transition: all 0.3s ease;
+            cursor: pointer;
+            user-select: none;
         }
 
         .cursed-object-item:hover {
             border-color: #9d4edd;
             box-shadow: 0 0 10px rgba(157, 78, 221, 0.4);
+        }
+
+        .cursed-object-item.selected {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+        }
+
+        .cursed-object-item.grayed {
+            opacity: 0.3;
+            pointer-events: none;
         }
 
         .cursed-object-name {
@@ -919,6 +932,38 @@
                 traits: "Ages over time, becoming less dangerous",
                 behavior: "Very active/fast when young. Ages with player presence. Gets slower/calmer.",
                 dangerLevel: "variable"
+            },
+            {
+                name: "Dayan",
+                evidence: ["emf5", "orbs", "spiritbox"],
+                forcedEvidence: ["spiritbox"],
+                speed: "Normal (1.7 m/s) → Fast (2.5 m/s) when players move nearby",
+                speedCategory: "variable",
+                huntThreshold: "50% sanity",
+                traits: "Speeds up when players move, slows when they stand still",
+                behavior: "Reacts to movement within 10m. Stand still to weaken. Always uses female model/name.",
+                dangerLevel: "medium"
+            },
+            {
+                name: "Gallu",
+                evidence: ["emf5", "uv", "spiritbox"],
+                forcedEvidence: ["spiritbox"],
+                speed: "Variable based on enraged state",
+                speedCategory: "variable",
+                huntThreshold: "50% (normal) / 60% (enraged)",
+                traits: "Angered by protective equipment, becomes exhausted",
+                behavior: "Protective equipment (crucifix/incense) enrages it, making items less effective. Gets tired after, making items more effective.",
+                dangerLevel: "high"
+            },
+            {
+                name: "Obambo",
+                evidence: ["writing", "uv", "dots"],
+                speed: "Slow (1.45 m/s) calm → Fast (1.96 m/s) aggressive",
+                speedCategory: "variable",
+                huntThreshold: "10% (calm) / 65% (aggressive)",
+                traits: "Switches states every 2 minutes between calm and aggressive",
+                behavior: "Unpredictable. Calm = slow hunts at low sanity. Aggressive = early fast hunts. Can switch mid-hunt.",
+                dangerLevel: "high"
             }
         ];
 
@@ -1134,6 +1179,27 @@
                     "The shapeshifting sneakster!",
                     "Count those fingers carefully...",
                     "Fingerprint roulette!"
+                ],
+                "Dayan": [
+                    "Stand still and she slows down!",
+                    "The dancing ghost reveals itself!",
+                    "Movement = speed. Keep that in mind.",
+                    "Watching your every move...",
+                    "Stop moving or you're done for!"
+                ],
+                "Gallu": [
+                    "Another demon? Just what we needed!",
+                    "Stop using that crucifix, you're making it angry!",
+                    "Protective equipment makes it STRONGER? Great.",
+                    "Wait for it to get tired, then strike!",
+                    "The enraged demon shows itself!"
+                ],
+                "Obambo": [
+                    "Mood swings: The Ghost!",
+                    "Is it calm or aggressive? Good luck!",
+                    "The two-faced spirit reveals itself!",
+                    "It just switched states mid-hunt. Fun.",
+                    "Bipolar ghost energy right here."
                 ]
             }
         };
@@ -1474,10 +1540,15 @@
             `;
         }
 
+        let selectedCursedObject = null;
+
         function updateCursedObjects() {
             const mapSelect = document.getElementById('mapSelect');
             const objectsList = document.getElementById('cursedObjectsList');
             const selectedMap = mapSelect.value;
+
+            // Reset selection when map changes
+            selectedCursedObject = null;
 
             if (!selectedMap) {
                 objectsList.innerHTML = '<p style="color: #888; text-align: center;">Select a map to see cursed object locations</p>';
@@ -1485,12 +1556,39 @@
             }
 
             const objects = cursedObjectData[selectedMap];
-            objectsList.innerHTML = objects.map(obj => `
-                <div class="cursed-object-item">
+            objectsList.innerHTML = objects.map((obj, index) => `
+                <div class="cursed-object-item" onclick="toggleCursedObject(${index})">
                     <div class="cursed-object-name">${obj.name}</div>
                     <div class="cursed-object-location">${obj.location}</div>
                 </div>
             `).join('');
+        }
+
+        function toggleCursedObject(index) {
+            const items = document.querySelectorAll('.cursed-object-item');
+            
+            // If clicking the already selected item, deselect it
+            if (selectedCursedObject === index) {
+                selectedCursedObject = null;
+                items.forEach(item => {
+                    item.classList.remove('selected', 'grayed');
+                });
+            } else {
+                // Select new item and gray out others
+                selectedCursedObject = index;
+                items.forEach((item, i) => {
+                    item.classList.remove('selected', 'grayed');
+                    if (i === index) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.add('grayed');
+                    }
+                });
+            }
+        }
+
+        function filterCursedObject() {
+            updateCursedObjects(); // Just recall the update function which now handles filtering
         }
 
         function resetAll() {
@@ -1505,6 +1603,10 @@
                 checkbox.indeterminate = false;
             });
 
+            // Reset cursed object selection
+            selectedCursedObject = null;
+            updateCursedObjects();
+
             updateMimicWarning();
             filterGhosts();
         }
@@ -1514,4 +1616,3 @@
     </script>
 </body>
 </html>
-
