@@ -558,6 +558,21 @@
             font-size: 0.9em;
         }
 
+        .cursed-object-item.crossed-off {
+            opacity: 0.45;
+            border-color: #ff6666;
+            background: rgba(255, 102, 102, 0.07);
+        }
+
+        .cursed-object-item.crossed-off .cursed-object-name {
+            text-decoration: line-through;
+            color: #ff6666;
+        }
+
+        .cursed-object-item.crossed-off .cursed-object-location {
+            text-decoration: line-through;
+        }
+
         footer {
             text-align: center;
             margin-top: 40px;
@@ -642,18 +657,19 @@
             
             <select id="mapSelect" class="map-select" onchange="updateCursedObjects()">
                 <option value="">-- Select a Map --</option>
-                <option value="tanglewood">Tanglewood Street House</option>
-                <option value="edgefield">Edgefield Road</option>
-                <option value="ridgeview">Ridgeview Court</option>
+                <option value="tanglewood">6 Tanglewood Drive</option>
+                <option value="edgefield">42 Edgefield Road</option>
+                <option value="ridgeview">10 Ridgeview Court</option>
+                <option value="willow">13 Willow Street</option>
                 <option value="grafton">Grafton Farmhouse</option>
                 <option value="bleasdale">Bleasdale Farmhouse</option>
+                <option value="woodwind">Camp Woodwind</option>
+                <option value="maple">Maple Lodge Campsite</option>
                 <option value="brownstone">Brownstone High School</option>
                 <option value="prison">Prison</option>
-                <option value="asylum">Asylum</option>
-                <option value="maple">Maple Lodge Campsite</option>
-                <option value="woodwind">Camp Woodwind</option>
-                <option value="sunny">Sunny Meadows (Restricted)</option>
                 <option value="point">Point Hope</option>
+                <option value="sunny">Sunny Meadows</option>
+                <option value="diner">Nell's Diner</option>
             </select>
 
             <div id="cursedObjectsList" class="cursed-objects-list">
@@ -964,6 +980,26 @@
                 traits: "Switches states every 2 minutes between calm and aggressive",
                 behavior: "Unpredictable. Calm = slow hunts at low sanity. Aggressive = early fast hunts. Can switch mid-hunt.",
                 dangerLevel: "high"
+            },
+            {
+                name: "Aswang",
+                evidence: ["freezing", "writing", "dots"],
+                speed: "Slow base (1.53 m/s) → Fast (2.53 m/s) with line-of-sight — accelerates faster than any other ghost",
+                speedCategory: "variable",
+                huntThreshold: "50% sanity",
+                traits: "Fastest LoS acceleration in the game. Cannot kill players in official hiding spots",
+                behavior: "Commits hard to chasing over searching. If it finds you hiding, next hunt has zero grace period and it returns to your exact spot. Use official hiding spots (closets/lockers) — but relocate after each hunt.",
+                dangerLevel: "medium"
+            },
+            {
+                name: "Kormos",
+                evidence: ["orbs", "spiritbox", "uv"],
+                speed: "Normal (1.7 m/s) → Fast (2.21 m/s) when it detects a player. Long-range detection speed multiplied by 1.3x",
+                speedCategory: "variable",
+                huntThreshold: "50% sanity (70% if a player sprints in the same room)",
+                traits: "Completely blind — cannot detect players visually. Tracks by sound only",
+                behavior: "Cannot see you at all — stand still and silent and it walks right past. Sprint near it and it can hunt at 70% sanity. Detection range: 30m sprinting, 15m walking, 10m crouch-walking. Cannot do mist form or chasing events. Note: shares evidence with Hantu/Onryo — check for Freezing Temps to rule out The Mimic.",
+                dangerLevel: "high"
             }
         ];
 
@@ -1200,6 +1236,24 @@
                     "The two-faced spirit reveals itself!",
                     "It just switched states mid-hunt. Fun.",
                     "Bipolar ghost energy right here."
+                ],
+                "Aswang": [
+                    "It can't follow you into a closet. Small victories.",
+                    "Get to an official hiding spot. It legally can't kill you there.",
+                    "It accelerates FAST. Break line of sight NOW.",
+                    "Filipino folklore was right to be scared.",
+                    "Hide smart. Then immediately relocate.",
+                    "No grace period next hunt. MOVE.",
+                    "Fast learner. Knows where you hid. Don't go back."
+                ],
+                "Kormos": [
+                    "It's BLIND. Stop. Moving.",
+                    "Don't run. Don't breathe. Don't exist.",
+                    "It can't see you. It absolutely can HEAR you.",
+                    "Whatever you do, do NOT sprint.",
+                    "Crouch. Walk. Survive. In that order.",
+                    "Stand still. If it walks past you, you're golden.",
+                    "Library rules are now life-or-death rules."
                 ]
             }
         };
@@ -1207,100 +1261,121 @@
         // Cursed object data
         const cursedObjectData = {
             tanglewood: [
-                { name: "Summoning Circle", location: "Garage" },
-                { name: "Ouija Board", location: "Basement or Master Bedroom" },
-                { name: "Music Box", location: "Living Room or Boys Bedroom" },
-                { name: "Voodoo Doll", location: "Storage Room" },
-                { name: "Tarot Cards", location: "Living Room (small table in corner)" },
-                { name: "Haunted Mirror", location: "Hallway near Living Room (on wall)" }
+                { name: "Haunted Mirror", location: "Living room wall near primary bedroom door" },
+                { name: "Music Box", location: "Dresser inside primary bedroom closet" },
+                { name: "Tarot Cards", location: "Side table near chair (living room)" },
+                { name: "Voodoo Doll", location: "Children's bedroom, corner next to the bed" },
+                { name: "Ouija Board", location: "Basement, under the train table" },
+                { name: "Summoning Circle", location: "Basement floor in front of the hobby table" },
+                { name: "Monkey Paw", location: "Garage, on top of fertilizer bags" }
             ],
             edgefield: [
-                { name: "Summoning Circle", location: "Basement (near stairs)" },
-                { name: "Ouija Board", location: "Basement backroom (on shelf)" },
-                { name: "Music Box", location: "Foyer (near stairs)" },
-                { name: "Voodoo Doll", location: "Purple bedroom (2nd floor)" },
-                { name: "Tarot Cards", location: "Table behind front door" },
-                { name: "Haunted Mirror", location: "Living Room (southwest corner)" }
+                { name: "Tarot Cards", location: "White dresser to the right of the front door" },
+                { name: "Music Box", location: "Living room, white dresser next to green bowl and lamp" },
+                { name: "Haunted Mirror", location: "Wall next to the stairs at the entrance" },
+                { name: "Monkey Paw", location: "Orange bedroom (2nd floor), on the blue/pink changing table" },
+                { name: "Voodoo Doll", location: "Blue bedroom (2nd floor), on the bed" },
+                { name: "Ouija Board", location: "Utility room (back-left 1st floor), on the ground" },
+                { name: "Summoning Circle", location: "Basement, between stacks of shelves" }
             ],
             ridgeview: [
-                { name: "Summoning Circle", location: "Garage" },
-                { name: "Ouija Board", location: "1st floor utility closet" },
-                { name: "Music Box", location: "Girl's bedroom" },
-                { name: "Voodoo Doll", location: "Office" },
-                { name: "Tarot Cards", location: "Foyer (near window by front door)" },
-                { name: "Haunted Mirror", location: "Behind stairs (1st floor)" }
+                { name: "Tarot Cards", location: "Small table in the foyer near the entrance" },
+                { name: "Music Box", location: "Table in the girls' (pink) bedroom upstairs" },
+                { name: "Haunted Mirror", location: "Wall above the lamp near the stairs in the hallway" },
+                { name: "Monkey Paw", location: "Desk in the boys' bedroom upstairs" },
+                { name: "Voodoo Doll", location: "Blue bench next to the piano (ground floor)" },
+                { name: "Ouija Board", location: "Shelf in the utility room (1st floor hallway)" },
+                { name: "Summoning Circle", location: "Basement, in front of the basement door" }
+            ],
+            willow: [
+                { name: "Music Box", location: "Small table near the entrance to the living room" },
+                { name: "Tarot Cards", location: "Small table on the right as you enter" },
+                { name: "Haunted Mirror", location: "Garage wall, near the utility shelves" },
+                { name: "Monkey Paw", location: "White cabinet in hallway, between the bathroom and basement doors" },
+                { name: "Voodoo Doll", location: "Cabinet in the boys' (blue) bedroom" },
+                { name: "Ouija Board", location: "On or near the washing machine in the garage" },
+                { name: "Summoning Circle", location: "Basement hallway" }
             ],
             grafton: [
-                { name: "Summoning Circle", location: "Shed" },
-                { name: "Ouija Board", location: "Master bedroom closet" },
-                { name: "Music Box", location: "Dining Room" },
-                { name: "Voodoo Doll", location: "Nursery (2nd floor)" },
-                { name: "Tarot Cards", location: "Dining table (left of front door)" },
-                { name: "Haunted Mirror", location: "Living Room (multiple spots)" }
+                { name: "Tarot Cards", location: "Dining room table with checkered tablecloth (left of entrance)" },
+                { name: "Music Box", location: "Large wooden shelves to the right of the stairs" },
+                { name: "Haunted Mirror", location: "Foyer wall, just before the door to the kitchen" },
+                { name: "Monkey Paw", location: "Table in first bedroom on the right (next to an ax)" },
+                { name: "Voodoo Doll", location: "Nursery (2nd floor), on a small leather chest" },
+                { name: "Ouija Board", location: "Small utility closet (back-right 1st floor), on the ground" },
+                { name: "Summoning Circle", location: "Storage room (accessible through the 2nd floor bedroom)" }
             ],
             bleasdale: [
-                { name: "Summoning Circle", location: "Attic" },
-                { name: "Ouija Board", location: "Workshop" },
-                { name: "Music Box", location: "Nursery (2nd floor)" },
-                { name: "Voodoo Doll", location: "Laundry Room" },
-                { name: "Tarot Cards", location: "Office (1st room on left, on desk)" },
-                { name: "Haunted Mirror", location: "Living Room or Office (multiple spots)" }
-            ],
-            brownstone: [
-                { name: "Summoning Circle", location: "Lobby (between lobby and corridor)" },
-                { name: "Ouija Board", location: "Lobby area (1st floor)" },
-                { name: "Music Box", location: "Lobby (past mirror)" },
-                { name: "Voodoo Doll", location: "Pool Area or Gym" },
-                { name: "Tarot Cards", location: "Lobby (near 1st classroom wall)" },
-                { name: "Haunted Mirror", location: "Lobby (along library wall)" }
-            ],
-            prison: [
-                { name: "Summoning Circle", location: "Main entrance area" },
-                { name: "Ouija Board", location: "Main entrance (left corner)" },
-                { name: "Music Box", location: "Near entrance" },
-                { name: "Voodoo Doll", location: "Cafeteria area" },
-                { name: "Tarot Cards", location: "Box near entrance (left side)" },
-                { name: "Haunted Mirror", location: "Under seats (right of 1st aisle)" }
-            ],
-            asylum: [
-                { name: "Summoning Circle", location: "Chapel (on stage)" },
-                { name: "Ouija Board", location: "Chapel (on stage)" },
-                { name: "Music Box", location: "Chapel (on stage)" },
-                { name: "Voodoo Doll", location: "Chapel (on stage)" },
-                { name: "Tarot Cards", location: "Chapel (on stage)" },
-                { name: "Haunted Mirror", location: "Chapel (on stage)" }
-            ],
-            maple: [
-                { name: "Summoning Circle", location: "Cabin (base of stairs - 1st floor)" },
-                { name: "Ouija Board", location: "Restroom building (back alley shelf)" },
-                { name: "Music Box", location: "Campfire by totem pole (on stump)" },
-                { name: "Voodoo Doll", location: "Left campsite (logs around campfire)" },
-                { name: "Tarot Cards", location: "Table behind campfire (left after spawn)" },
-                { name: "Haunted Mirror", location: "Reception building (above couch, left side)" }
+                { name: "Tarot Cards", location: "Desk in the office (first room on the left entering the building)" },
+                { name: "Music Box", location: "Small wooden table in the living room" },
+                { name: "Haunted Mirror", location: "Office wall next to the floor lamp and window" },
+                { name: "Monkey Paw", location: "Master bedroom (2nd floor), on the leather chest next to the crib" },
+                { name: "Voodoo Doll", location: "Brown leather chair opposite the two bedrooms near attic stairs" },
+                { name: "Ouija Board", location: "Garage workbench (sometimes a hammer is on top)" },
+                { name: "Summoning Circle", location: "Attic floor, next to two stacked brown boxes" }
             ],
             woodwind: [
-                { name: "Summoning Circle", location: "Campfire area" },
-                { name: "Ouija Board", location: "Cabin interiors" },
-                { name: "Music Box", location: "Main lodge area" },
-                { name: "Voodoo Doll", location: "Storage shed or campfire logs" },
-                { name: "Tarot Cards", location: "Wooden tables (left side, on back)" },
-                { name: "Haunted Mirror", location: "Left of campfire (by tree w/ fairy lights)" }
+                { name: "Tarot Cards", location: "Left-most picnic bench (near two blue books)" },
+                { name: "Music Box", location: "Small table inside the yellow tent (left side of campsite)" },
+                { name: "Haunted Mirror", location: "Ground next to the fairy light tree (center of campsite)" },
+                { name: "Monkey Paw", location: "Wooden platform next to the purple tent (north side, near marshmallow sticks)" },
+                { name: "Voodoo Doll", location: "Ground next to the smaller blue tent (left of the big red tent)" },
+                { name: "Ouija Board", location: "Table inside the white tent with outdoor games (right of entrance)" },
+                { name: "Summoning Circle", location: "Ground inside the white food/drinks tent (right, past the campfire)" }
             ],
-            sunny: [
-                { name: "Summoning Circle", location: "Chapel (on stage in circle)" },
-                { name: "Ouija Board", location: "Chapel (on stage)" },
-                { name: "Music Box", location: "Chapel (on stage)" },
-                { name: "Voodoo Doll", location: "Chapel (on stage)" },
-                { name: "Tarot Cards", location: "Chapel (on stage)" },
-                { name: "Haunted Mirror", location: "Chapel (on stage)" }
+            maple: [
+                { name: "Tarot Cards", location: "Small camping table outside white tent (north path, red flask nearby)" },
+                { name: "Music Box", location: "Small metal table just outside the main log cabin door" },
+                { name: "Haunted Mirror", location: "Ground inside the blue tent (left of entrance)" },
+                { name: "Monkey Paw", location: "Blue camping chair at the end of the pier" },
+                { name: "Voodoo Doll", location: "Next to a log by the campfire (left side of map)" },
+                { name: "Ouija Board", location: "Shelf in the cleaning closet inside the bathroom block (right of entrance)" },
+                { name: "Summoning Circle", location: "Log cabin living room floor" }
+            ],
+            brownstone: [
+                { name: "Tarot Cards", location: "Long wooden bench to the left of the lobby entrance (next to a green book)" },
+                { name: "Music Box", location: "Long wooden bench to the right of the lobby (among green books)" },
+                { name: "Haunted Mirror", location: "Right side of lobby propped against a brick pillar (before the corridor)" },
+                { name: "Monkey Paw", location: "On top of a cardboard box, right side of lobby (next to brick pillar)" },
+                { name: "Voodoo Doll", location: "Wooden bench directly opposite the entrance" },
+                { name: "Ouija Board", location: "Lobby floor next to a pillar on the left (where room meets corridor)" },
+                { name: "Summoning Circle", location: "Floor in the center of the corridor (where lobby meets hallway)" }
+            ],
+            prison: [
+                { name: "Tarot Cards", location: "Grey plastic box on the desk in the security checkpoint" },
+                { name: "Music Box", location: "Inside the left grey plastic box on the desk in the security area" },
+                { name: "Monkey Paw", location: "Security checkpoint desk, right of the grey plastic box (next to the big scanner)" },
+                { name: "Haunted Mirror", location: "Ground underneath the row of white chairs (straight from entrance)" },
+                { name: "Voodoo Doll", location: "Desk next to the big red scanner (left of the grey plastic box)" },
+                { name: "Ouija Board", location: "Floor behind the desks in the security checkpoint" },
+                { name: "Summoning Circle", location: "End of the entrance corridor, next to the row of white chairs" }
             ],
             point: [
-                { name: "Summoning Circle", location: "5th floor bathroom (center)" },
-                { name: "Ouija Board", location: "4th floor (on shelf, middle of room)" },
-                { name: "Music Box", location: "2nd floor" },
-                { name: "Voodoo Doll", location: "Varies by floor" },
-                { name: "Tarot Cards", location: "1st floor (end table between green couches)" },
-                { name: "Haunted Mirror", location: "3rd floor (by blue cabinet)" }
+                { name: "Tarot Cards", location: "1st floor, table between the two green couches" },
+                { name: "Haunted Mirror", location: "3rd floor, leaning on the blue cabinet below the staircase" },
+                { name: "Ouija Board", location: "4th floor, shelf under the record player" },
+                { name: "Summoning Circle", location: "5th floor, bathroom floor" },
+                { name: "Music Box", location: "6th floor, on the vanity dresser" },
+                { name: "Voodoo Doll", location: "7th floor, on top of the shelf at the end of the room" },
+                { name: "Monkey Paw", location: "8th floor, on the table with the wooden horse" }
+            ],
+            sunny: [
+                { name: "Summoning Circle", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Ouija Board", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Music Box", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Voodoo Doll", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Tarot Cards", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Haunted Mirror", location: "Chapel (candle-lit room straight ahead from the entrance)" },
+                { name: "Monkey Paw", location: "Chapel (candle-lit room straight ahead from the entrance)" }
+            ],
+            diner: [
+                { name: "Monkey Paw", location: "Kitchen, on the cutting board (middle prep station)" },
+                { name: "Tarot Cards", location: "Counter near the cash register" },
+                { name: "Voodoo Doll", location: "Booth in the main dining area" },
+                { name: "Summoning Circle", location: "Men's bathroom floor" },
+                { name: "Haunted Mirror", location: "Chair in the break room (employee hallway)" },
+                { name: "Music Box", location: "Table in the manager's office (employee hallway)" },
+                { name: "Ouija Board", location: "Box in the janitor's closet (employee hallway)" }
             ]
         };
 
@@ -1541,14 +1616,20 @@
         }
 
         let selectedCursedObject = null;
+        let crossedOffObjects = new Set();
+        let lastTapIndex = null;
+        let lastTapTime = 0;
 
         function updateCursedObjects() {
             const mapSelect = document.getElementById('mapSelect');
             const objectsList = document.getElementById('cursedObjectsList');
             const selectedMap = mapSelect.value;
 
-            // Reset selection when map changes
+            // Reset selection and crossed-off state when map changes
             selectedCursedObject = null;
+            crossedOffObjects = new Set();
+            lastTapIndex = null;
+            lastTapTime = 0;
 
             if (!selectedMap) {
                 objectsList.innerHTML = '<p style="color: #888; text-align: center;">Select a map to see cursed object locations</p>';
@@ -1557,38 +1638,80 @@
 
             const objects = cursedObjectData[selectedMap];
             objectsList.innerHTML = objects.map((obj, index) => `
-                <div class="cursed-object-item" onclick="toggleCursedObject(${index})">
+                <div class="cursed-object-item" onclick="handleCursedObjectClick(${index})">
                     <div class="cursed-object-name">${obj.name}</div>
                     <div class="cursed-object-location">${obj.location}</div>
                 </div>
             `).join('');
         }
 
-        function toggleCursedObject(index) {
+        function handleCursedObjectClick(index) {
+            const now = Date.now();
+            const isDoubleTap = (lastTapIndex === index && (now - lastTapTime) < 400);
+            lastTapIndex = index;
+            lastTapTime = now;
+
             const items = document.querySelectorAll('.cursed-object-item');
-            
-            // If clicking the already selected item, deselect it
+            const item = items[index];
+
+            if (isDoubleTap) {
+                // Double-tap on a crossed-off item: un-cross and highlight it
+                if (crossedOffObjects.has(index)) {
+                    crossedOffObjects.delete(index);
+                    item.classList.remove('crossed-off');
+                    // Now highlight it, gray others
+                    selectedCursedObject = index;
+                    items.forEach((el, i) => {
+                        el.classList.remove('selected', 'grayed');
+                        if (i === index) {
+                            el.classList.add('selected');
+                        } else if (!crossedOffObjects.has(i)) {
+                            el.classList.add('grayed');
+                        }
+                    });
+                }
+                return;
+            }
+
+            // Single tap logic
+            if (crossedOffObjects.has(index)) {
+                // Already crossed off — do nothing on single tap (need double to un-cross)
+                return;
+            }
+
             if (selectedCursedObject === index) {
+                // Tapping the highlighted item: deselect it
                 selectedCursedObject = null;
-                items.forEach(item => {
-                    item.classList.remove('selected', 'grayed');
-                });
+                items.forEach(el => el.classList.remove('selected', 'grayed'));
             } else {
-                // Select new item and gray out others
-                selectedCursedObject = index;
-                items.forEach((item, i) => {
-                    item.classList.remove('selected', 'grayed');
-                    if (i === index) {
-                        item.classList.add('selected');
-                    } else {
-                        item.classList.add('grayed');
-                    }
-                });
+                // Tapping an uncrossed, unselected item: cross it off
+                crossedOffObjects.add(index);
+                item.classList.add('crossed-off');
+
+                // If this was the selected item, clear the highlight state
+                if (selectedCursedObject === index) {
+                    selectedCursedObject = null;
+                }
+
+                // Refresh grayed state — grayed items are uncrossed non-selected ones
+                // only if something is still selected
+                if (selectedCursedObject !== null) {
+                    items.forEach((el, i) => {
+                        el.classList.remove('grayed');
+                        if (i !== selectedCursedObject && !crossedOffObjects.has(i)) {
+                            el.classList.add('grayed');
+                        }
+                    });
+                } else {
+                    items.forEach((el, i) => {
+                        el.classList.remove('selected', 'grayed');
+                    });
+                }
             }
         }
 
         function filterCursedObject() {
-            updateCursedObjects(); // Just recall the update function which now handles filtering
+            updateCursedObjects();
         }
 
         function resetAll() {
@@ -1603,8 +1726,11 @@
                 checkbox.indeterminate = false;
             });
 
-            // Reset cursed object selection
+            // Reset cursed object selection and crossed-off states
             selectedCursedObject = null;
+            crossedOffObjects = new Set();
+            lastTapIndex = null;
+            lastTapTime = 0;
             updateCursedObjects();
 
             updateMimicWarning();
